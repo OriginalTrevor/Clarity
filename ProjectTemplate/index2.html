@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+	<script type="text/javascript">
+		function TestButtonHandler() {
+
+			userCountValue = document.getElementById("userCountInput").value;
+
+			var webMethod = "ProjectServices.asmx/getJasons";
+			var parameters = "{\"userCount\":\"" + encodeURI(userCountValue) + "\"}";
+
+			//jQuery ajax method
+			$.ajax({
+				type: "POST",
+				url: webMethod,
+				data: parameters,
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (msg) {
+					var responseFromServer = msg.d;
+
+					for (var i = 0; i < responseFromServer.length; i++) {
+                        alert(responseFromServer[i].firstName);
+                        alert(responseFromServer[i].lastName);
+                        alert(responseFromServer[i].phoneNumber);
+					}
+
+					doThisAfterServerStuff();
+				},
+				error: function (e) {
+					alert("this code will only execute if javascript is unable to access the webservice");
+				}
+			});
+		}
+
+		function doThisAfterServerStuff() {
+            alert("you thought this would execute after the code in my success function, didn't you?!?!");
+		}
+	</script>
+	<!--END OF YOUR OWN JAVASCRIPT-->
+
+	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
+	<style>
+
+	</style>
+	<!--END OF YOUR OWN CSS-->
+</head >
+<body>
+	<input id="userCountInput" type="text" />
+	<button onclick="javascript: TestButtonHandler();">Click here to test connection!</button>
+</body>
+</html >
