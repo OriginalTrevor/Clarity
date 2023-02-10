@@ -93,6 +93,7 @@
     <Content Include="AccountCreation.html" />
     <Content Include="AccountCreationScript.js" />
     <Content Include="AccountStyle.css" />
+    <Content Include="creation.html" />
     <Content Include="feed.png" />
     <Content Include="Global.asax" />
     <Content Include="HomePage.html" />
@@ -105,6 +106,8 @@
     <Content Include="SignInPage.html" />
     <Content Include="SignInScript.js" />
     <Content Include="SignInStyle.css" />
+    <Content Include="style2.css" />
+    <Content Include="userpage.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
