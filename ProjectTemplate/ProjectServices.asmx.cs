@@ -6,6 +6,7 @@ using System.Web.Services;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Security.Principal;
 
 namespace ProjectTemplate
 {
@@ -143,6 +144,130 @@ namespace ProjectTemplate
             }
 
             sqlConnection.Close();
+        }
+
+
+        [WebMethod(EnableSession = true)]
+        public void CreateCard(string uid, string desc, string category)
+        {
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            
+            string sqlSelect = "insert into Cards (cardcreator, carddesc, cardcategory) " +
+                "values(@uid, @desc, @category); SELECT LAST_INSERT_ID();";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(uid));
+            sqlCommand.Parameters.AddWithValue("@desc", HttpUtility.UrlDecode(desc));
+            sqlCommand.Parameters.AddWithValue("@category", HttpUtility.UrlDecode(category));
+
+            
+            sqlConnection.Open();
+            
+            try
+            {
+                int cardID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
+        /**
+         * UpgradetoAdmin will let admins upgrade regular user accounts to admin accounts
+         */
+        [WebMethod(EnableSession = true)]
+        public void UpgradetoAdmin(string uid)
+        {
+            if (Convert.ToInt32(Session["admin"]) == 1)
+            {
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                //this is a simple update, with parameters to pass in values
+                string sqlSelect = "update accounts set active=1 where id=@idValue";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(uid));
+
+                sqlConnection.Open();
+                try
+                {
+                    sqlCommand.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                }
+                sqlConnection.Close();
+            }
+        }
+
+        //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
+        [WebMethod(EnableSession = true)]
+        public Card[] GetCards()
+        {
+            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+            //Keeps everything simple.
+
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["id"] != null)
+            {
+                DataTable sqlDt = new DataTable("accounts");
+
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select cardid, cardcreator, carddesc, cardcategory from Cards where active=1 order by lastname";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
+
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<Card> cards = new List<Card>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    //only share user id and pass info with admins!
+                    if (Convert.ToInt32(Session["admin"]) == 1)
+                    {
+                        cards.Add(new Card
+                        {
+                            cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
+                            cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
+                            carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
+                            cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
+                            
+                        });
+                    }
+                    else
+                    {
+                        cards.Add(new Card
+                        {
+                            cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
+                            cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
+                            carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
+                            cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
+                        });
+                    }
+                }
+                //convert the list of cards to an array and return!
+                return cards.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new Card[0];
+            }
         }
 
 
