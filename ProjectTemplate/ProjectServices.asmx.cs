@@ -43,7 +43,7 @@ namespace ProjectTemplate
         {
             bool success = false;
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            string sqlSelect = "SELECT userid FROM accounts WHERE userid=@idValue and pass=@passValue";
+            string sqlSelect = "SELECT userid,IsAdmin FROM accounts WHERE userid=@idValue and pass=@passValue";
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
@@ -61,6 +61,7 @@ namespace ProjectTemplate
             if (sqlDt.Rows.Count > 0)
             {
                 Session["userid"] = sqlDt.Rows[0]["userid"];
+                Session["IsAdmin"] = sqlDt.Rows[0]["IsAdmin"];
                 success = true;
             }
             //return the result!
@@ -183,11 +184,11 @@ namespace ProjectTemplate
         [WebMethod(EnableSession = true)]
         public void UpgradetoAdmin(string uid)
         {
-            if (Convert.ToInt32(Session["admin"]) == 1)
+            if (Convert.ToInt32(Session["IsAdmin"]) == 1)
             {
                 string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
                 //this is a simple update, with parameters to pass in values
-                string sqlSelect = "update accounts set active=1 where id=@idValue";
+                string sqlSelect = "update accounts set IsAdmin=1 where userid=@idValue";
 
                 MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -216,12 +217,12 @@ namespace ProjectTemplate
             //Keeps everything simple.
 
             //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
-            if (Session["id"] != null)
+            if (Session["userid"] != null)
             {
                 DataTable sqlDt = new DataTable("accounts");
 
                 string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                string sqlSelect = "select cardid, cardcreator, carddesc, cardcategory from Cards where active=1 order by lastname";
+                string sqlSelect = "select cardid, cardcreator, carddesc, cardcategory from Cards order by cardid";
 
                 MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
