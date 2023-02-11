@@ -91,24 +91,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AccountCreation.html" />
-    <Content Include="AccountCreationScript.js" />
-    <Content Include="AccountStyle.css" />
     <Content Include="CardCreation.html" />
     <Content Include="feed.png" />
+    <Content Include="feed3.png" />
     <Content Include="Global.asax" />
     <Content Include="HomePage.html" />
-    <Content Include="HomePageScript.js" />
-    <Content Include="HomePageStyle.css" />
     <Content Include="index.html" />
     <Content Include="pencil.png" />
-    <Content Include="profile.png" />
+    <Content Include="profile4.png" />
     <Content Include="ProjectServices.asmx" />
     <Content Include="SignInPage.html" />
-    <Content Include="SignInScript.js" />
-    <Content Include="SignInStyle.css" />
-    <Content Include="CardCreationStyle.css" />
     <Content Include="UserProfile.html" />
-    <Content Include="UserProfileStyle.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

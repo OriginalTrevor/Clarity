@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="SignInStyle.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script type="text/javascript" src="SignInScript.js"></script>
+</head>
+
+<body>
+    <form class="login" action="index.html" method="post">
+        <h1>Clarity Login</h1>
+        <input type="text" name="email" placeholder="Email" id="logonId">
+        <p></p>
+        <input type="password"
+               name="password" placeholder="Password" id="logonPassword">
+        <p></p>
+        <button type="submit" onclick="LogOn()"> Sign in </button>
+        <h2>New user?</h2>
+        <button class="button" onclick="window.location.href = 'AccountCreation.html';">Create Account</button>
+    </form>
+
+
+</body>
+
+</html>
