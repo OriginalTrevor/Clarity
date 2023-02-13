@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"">
     <title>Home</title>
     <style>
         html, body {
@@ -16,30 +16,32 @@
         h1 {
             margin: 0;
             padding: 0;
+            padding-right: 50vw;
             color: white;
             font-weight: normal;
             margin-left: 16px;
             padding-top: 10px;
-            font-size: 35px;
+            font-size: 5vh;
         }
 
         .menu-bar-container {
             height: 10vh;
             background-color: #3e9696;
             display: flex;
+            justify-content: center;
         }
 
         .card-container {
-            display: inline-flex;
+            display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 75px;
+            
         }
 
         .card {
             width: 22vw;
-            height: 65vh;
+            height: 50vh;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             transition: 0.3s;
             border-radius: 10px;
@@ -48,14 +50,16 @@
             background: #FF968F;
         }
 
-        .card-image {
-            width: 100%;
-            height: 75%;
-            overflow: hidden;
-        }
+		.card-image {
+			width: 100%;
+			height: 25vh;
+			overflow: hidden;
+			text-align: center;
+		}
 
             .card-image img {
-                width: 100%;
+                height: 100%;
+                
             }
 
         .card-body {
@@ -64,21 +68,21 @@
         }
 
         .card-title {
-            font-size: 42px;
+            font-size: 5vh;
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
         }
 
-        .button {
-            background-color: #36454F;
-            color: whitesmoke;
-            padding: 15px 32px;
-            text-align: center;
-            font-size: 24px;
-            border-radius: 5px;
-            margin-left: 85vw;
-        }
+		.button {
+			background-color: #36454F;
+			color: whitesmoke;
+			padding: 15px 32px;
+			font-size: 3vh;
+			border-radius: 5px;
+
+		}
+
 
         a {
             color: black;
@@ -137,9 +141,7 @@
                 <h3 class="card-title"><a href="UserProfile.html">Your Profile</a></h3>
             </div>
         </div>
-    </div>
-
-    <div class="card-container">
+    
         <div class="card" onclick="javascript: window.location.href = 'CardCreation.html';">
             <div class="card-image">
                 <img src="pencil.png" alt="image">
@@ -148,9 +150,7 @@
                 <h3 class="card-title"><a href="CardCreation.html">Create a Card</a></h3>
             </div>
         </div>
-    </div>
-
-    <div class="card-container">
+    
         <div class="card" onclick="javascript: window.location.href = 'CardFeed.html';">
             <div class="card-image">
                 <img src="feed3.png" alt="image">
