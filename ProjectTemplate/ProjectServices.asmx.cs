@@ -7,6 +7,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Security.Principal;
+using System.Security.Cryptography;
 
 namespace ProjectTemplate
 {
@@ -106,7 +107,7 @@ namespace ProjectTemplate
             // Name is found in table, so name is already in use
             if (sqlDt.Rows.Count > 0)
             {
-                Session["userid"] = sqlDt.Rows[0]["userid"];
+                // Session["userid"] = sqlDt.Rows[0]["userid"];
                 nameInUse = true;
 
             }
@@ -211,12 +212,8 @@ namespace ProjectTemplate
         [WebMethod(EnableSession = true)]
         public Card[] GetCards()
         {
-            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-            //Keeps everything simple.
-
-            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            
+            //WE ONLY DISPLAY CARDS WITH LOGGED IN USERS!
             if (Session["userid"] != null)
             {
                 DataTable sqlDt = new DataTable("accounts");
@@ -238,28 +235,15 @@ namespace ProjectTemplate
                 List<Card> cards = new List<Card>();
                 for (int i = 0; i < sqlDt.Rows.Count; i++)
                 {
-                    //only share user id and pass info with admins!
-                    if (Convert.ToInt32(Session["admin"]) == 1)
+
+                    cards.Add(new Card
                     {
-                        cards.Add(new Card
-                        {
-                            cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
-                            cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
-                            carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
-                            cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
-                            
-                        });
-                    }
-                    else
-                    {
-                        cards.Add(new Card
-                        {
-                            cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
-                            cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
-                            carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
-                            cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
-                        });
-                    }
+                        cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
+                        cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
+                        carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
+                        cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
+
+                    });
                 }
                 //convert the list of cards to an array and return!
                 return cards.ToArray();
@@ -269,6 +253,182 @@ namespace ProjectTemplate
                 //if they're not logged in, return an empty array
                 return new Card[0];
             }
+        }
+
+        /**
+         * GetAccounts will return all accounts and where or not they are admins. Only usable by admins
+         */
+
+        [WebMethod(EnableSession = true)]
+        public Account[] GetAccounts()
+        {
+        
+            if (Convert.ToInt32(Session["IsAdmin"]) == 1)
+            {
+                DataTable sqlDt = new DataTable("accounts");
+
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select accountid, userid, isAdmin from accounts";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
+
+                
+                List<Account> accounts = new List<Account>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    accounts.Add(new Account
+                    {
+                        accountid = Convert.ToInt32(sqlDt.Rows[i]["accountid"]),
+                        userid = sqlDt.Rows[i]["userid"].ToString(),
+                        isAdmin = Convert.ToBoolean(sqlDt.Rows[i]["isAdmin"])
+                    });
+                   
+                }
+                //convert the list of accounts to an array and return!
+                return accounts.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new Account[0];
+            }
+        }
+
+        /**
+         * GiveUpvote will give the card an upvote if there isn't one already or take it away
+         */
+        [WebMethod(EnableSession = true)]
+        public void GiveUpvote(string accountid, string cardid)
+        {
+            if (Session["userid"] != null)
+            {
+                bool voteAlreadyGiven = false;
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+                // First we need to ensure that there is not an existing vote for this account and card
+
+                string sqlSelect = "SELECT accouontid, cardid, isUpvote FROM Votes WHERE accouontid=@aid AND cardid=@cid";
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+                sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+
+                DataTable sqlDt = new DataTable();
+
+                sqlDa.Fill(sqlDt);
+
+                // Record found in table, so a vote was already given
+                if (sqlDt.Rows.Count > 0)
+                {
+                    //bool isUpvote= (bool)sqlDt.Rows[0]["isUpvote"];
+                    voteAlreadyGiven = true;
+
+                }
+
+                if (!voteAlreadyGiven)
+                {
+                    sqlSelect = "insert into Votes (accouontid, cardid, isUpvote) " +
+                    "values(@aid, @cid, true); SELECT LAST_INSERT_ID();";
+
+                    sqlConnection = new MySqlConnection(sqlConnectString);
+                    sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                    sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                    sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+
+                    sqlConnection.Open();
+
+                    try
+                    {
+                        int cardID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                    sqlConnection.Close();
+                }
+            }
+
+
+        }
+
+
+        /**
+        * GiveDownvote will give the card a downvote if there isn't one already or take it away
+        */
+        [WebMethod(EnableSession = true)]
+        public void GiveDownvote(string accountid, string cardid)
+        {
+            if (Session["userid"] != null)
+            {
+                bool voteAlreadyGiven = false;
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+                // First we need to ensure that there is not an existing vote for this account and card
+
+                string sqlSelect = "SELECT accouontid, cardid, isUpvote FROM Votes WHERE accouontid=@aid AND cardid=@cid";
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+                sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+
+                DataTable sqlDt = new DataTable();
+
+                sqlDa.Fill(sqlDt);
+
+                // Record found in table, so a vote was already given
+                if (sqlDt.Rows.Count > 0)
+                {
+                    //bool isUpvote= (bool)sqlDt.Rows[0]["isUpvote"];
+                    voteAlreadyGiven = true;
+
+                }
+
+                if (!voteAlreadyGiven)
+                {
+                    sqlSelect = "insert into Votes (accouontid, cardid, isUpvote) " +
+                    "values(@aid, @cid, false); SELECT LAST_INSERT_ID();";
+
+                    sqlConnection = new MySqlConnection(sqlConnectString);
+                    sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                    sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                    sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+
+                    sqlConnection.Open();
+
+                    try
+                    {
+                        int cardID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                    sqlConnection.Close();
+                }
+            }
+
+
         }
 
 
