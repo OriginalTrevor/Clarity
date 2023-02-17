@@ -36,8 +36,23 @@
           text-align: center;
       }
 
-   
+  	.menu-bar-container {
+  		height: 10vh;
+  		background-color: #3e9696;
+  		display: flex;
+  		justify-content: center;
+  	}
 
+  	h1 {
+  		margin: 0;
+  		padding: 0;
+  		padding-right: 40vw;
+  		color: white;
+  		font-weight: normal;
+  		margin-left: 16px;
+  		padding-top: 10px;
+  		font-size: 5vh;
+  	}
 
   </style>
 </head>
@@ -47,8 +62,12 @@
 </script>
 
 <body>
-    <h2>Welcome User!</h2>
-    <h3> Here are your cards: </h3>
+    
+
+    <div class="menu-bar-container">
+        <h1>Your Submissions</h1>
+        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+    </div>
     <div class="card-list">
         <div class="card4">
             <h3>Card 1</h3>
@@ -60,7 +79,7 @@
             <h3>Card 3</h3>
         </div>
     </div>
-    <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+    
 
 </body>
 

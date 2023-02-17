@@ -127,30 +127,33 @@
     }
 </script>
 
-    <body>
-        <div class="form-container">
-          <h2>Submit Card</h2>
-          <form onsubmit="javascript:  CreateCard($('#email').val(), $('#message').val(), $('#cardCategoryId').val()); return false;">
-            
+<body>
+    
+    <div class="form-container">
+        <h2>Submit Card</h2>
+        <form onsubmit="javascript:  CreateCard($('#email').val(), $('#message').val(), $('#cardCategoryId').val()); return false;">
+
             <label for="user">UserID:</label>
             <input name="user" type="text" id="email" class="form-input" required>
-            
+
             <label for="message">Message:</label>
             <textarea name="message" type="text" id="message" class="form-input" required></textarea>
-            
+
             <label for="category">Card Category:</label>
             <select name="category" id="cardCategoryId" required>
                 <option value="idea">Idea</option>
                 <option value="complaint">Complaint</option>
             </select>
-            
-<!--            <label for="complaint">Complaint</label>
-            <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>-->
-            
+
+            <!--            <label for="complaint">Complaint</label>
+                        <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>-->
+
             <button type="submit" class="form-button">Submit</button>
-          </form>
-        </div>
-        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
-      </body>
+        </form>
+    </div>
+
+    <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+
+</body>
     </html>
     

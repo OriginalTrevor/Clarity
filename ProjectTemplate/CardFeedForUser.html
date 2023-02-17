@@ -14,11 +14,29 @@
 			background-color: #ADD8E6;
 		}
 
+		h1 {
+			margin: 0;
+			padding: 0;
+			padding-right: 50vw;
+			color: white;
+			font-weight: normal;
+			margin-left: 16px;
+			padding-top: 10px;
+			font-size: 5vh;
+		}
+
+		.menu-bar-container {
+			height: 10vh;
+			background-color: #3e9696;
+			display: flex;
+			justify-content: center;
+		}
+
 		.card {
 			background-color: white;
 			width: 500px;
 			padding: 65px;
-			top: 25%;
+			top: 50%;
 			left: 45%;
 			transform: translate(-38%, -45%);
 			text-align: center;
@@ -27,7 +45,7 @@
 
 		.actions {
 			position: absolute;
-			top: 60%;
+			top: 90%;
 			left: 50%;
 			transform: translate(-50%, -50%);
 			background: #2F4F4F;
@@ -65,6 +83,11 @@
         
    </head >
    <body>
+
+	   <div class="menu-bar-container">
+		   <h1>Card Feed</h1>
+		   <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+	   </div>
 	   <div class="card">
 		   <h1>Card Category Here</h1>
 		   <br>
@@ -77,7 +100,7 @@
 
 	   </form>
 
-	   <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+	   
 
    </body>
 </html >

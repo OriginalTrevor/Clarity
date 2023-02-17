@@ -1,4 +1,4 @@
-Card feed
+
 
 <!DOCTYPE html>
 <html>
@@ -9,6 +9,32 @@ Card feed
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <style>
+
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			background-color: #ADD8E6;
+		}
+
+		h1 {
+			margin: 0;
+			padding: 0;
+			padding-right: 50vw;
+			color: white;
+			font-weight: normal;
+			margin-left: 16px;
+			padding-top: 10px;
+			font-size: 5vh;
+		}
+
+		.menu-bar-container {
+			height: 10vh;
+			background-color: #3e9696;
+			display: flex;
+			justify-content: center;
+		}
+
     .feed-item {
         background-color: #FF968F;
   border: 2px solid ;
@@ -38,6 +64,7 @@ a {
             background-color: #3e9696;
             color: black;
             padding: 15px 32px;
+            margin: 20px;
             text-align: center;
             font-size: 14px;
             border-radius: 5px;
@@ -47,6 +74,11 @@ a {
 
 
 <body>
+
+    <div class="menu-bar-container">
+        <h1>Card Feed</h1>
+        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+    </div>
     <div class="feed-item">
         <h2>Card 1</h2>
         <p>
@@ -54,13 +86,13 @@ a {
                 <li>Name: </li>
                 <li>Email: </li>
                 <li>Message: </li>
-            
+
             </ol>
         </p>
-        <button class = "button" type="delete" class="form-button">Delete</button>
-      </div>
-  
-      <body>
+        <button class="button" type="delete" class="form-button">Delete</button>
+    </div>
+
+    <body>
         <div class="feed-item">
             <h2>Card 2</h2>
             <p>
@@ -68,13 +100,13 @@ a {
                     <li>Name: </li>
                     <li>Email: </li>
                     <li>Message: </li>
-                
+
                 </ol>
-                <button class = "button" type="delete" class="form-button">Delete</button>
+                <button class="button" type="delete" class="form-button">Delete</button>
             </p>
-          </div>
-          <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
-</body>
-   
+        </div>
+
+    </body>
+
 </html>
 
