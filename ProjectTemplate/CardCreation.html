@@ -1,4 +1,4 @@
-Card creation 
+
 
 <!DOCTYPE html>
 <html>
@@ -13,16 +13,24 @@ Card creation
             margin: 0;
             padding: 0;
             font-family: Helvetica, Arial, sans-serif;
+            background-color: #ADD8E6;
+            font-size: 2vh;
         }
-     
+
 
         .button {
-            background-color: #3e9696 ;
+            background-color: #FF968F;
             color: black;
             padding: 15px 32px;
             text-align: center;
             font-size: 14px;
             border-radius: 5px;
+            position: absolute;
+            top: 83%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            font-size: 1.5em;
         }
 
         h3 {
@@ -31,10 +39,14 @@ Card creation
 
         .form-container {
             width: 500px;
-            margin: left;
             text-align: left;
             padding: 30px;
-            background-color: #FF968F;
+            background-color: #3e9696;
+            padding: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .form-input {
@@ -49,13 +61,13 @@ Card creation
 
         .form-button {
             width: 100%;
-            background-color: #3e9696;
             color: black;
             padding: 14px 20px;
             margin: 8px 0;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 1.4em;
         }
 
 
@@ -64,26 +76,76 @@ Card creation
 
 <script>
     // this will be the code that links the C# backend code to the user card creation interface
+
+    function CreateCard(userId, cardDesc, cardCat) {
+        //the url of the webservice we will be talking to
+        var webMethod = "ProjectServices.asmx/CreateCard";
+        //the parameters we will pass the service (in json format because curly braces)
+        //note we encode the values for transmission over the web.  All the \'s are just
+        //because we want to wrap our keynames and values in double quotes so we have to
+        //escape the double quotes (because the overall string we're creating is in double quotes!)
+        var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"desc\":\"" + encodeURI(cardDesc) + "\",\"category\":\"" + encodeURI(cardCat) + "\"}";
+
+        //jQuery ajax method
+        $.ajax({
+            //post is more secure than get, and allows
+            //us to send big data if we want.  really just
+            //depends on the way the service you're talking to is set up, though
+            type: "POST",
+            //the url is set to the string we created above
+            url: webMethod,
+            //same with the data
+            data: parameters,
+            //these next two key/value pairs say we intend to talk in JSON format
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            //jQuery sends the data and asynchronously waits for a response.  when it
+            //gets a response, it calls the function mapped to the success key here
+            success: function (msg) {
+                //the server response is in the msg object passed in to the function here
+                //since our logon web method simply returns a true/false, that value is mapped
+                //to a generic property of the server response called d (I assume short for data
+                //but honestly I don't know...)
+                if (!msg.d) {
+                    //server replied true, so go to the home page
+                    window.location.replace('HomePage.html');
+                }
+                else {
+                    //server replied false, so let the user know
+                    //the card creation failed
+                    alert("could not create card");
+                }
+            },
+            error: function (e) {
+                //if something goes wrong in the mechanics of delivering the
+                //message to the server or the server processing that message,
+                //then this function mapped to the error key is executed rather
+                //than the one mapped to the success key.
+                alert("There seems to be an error somewhere.....");
+            }
+        });
+    }
 </script>
 
     <body>
         <div class="form-container">
           <h2>Submit Card</h2>
-          <form action="#">
-            <label for="name">Name:</label>
-            <input type="text" id="name" class="form-input" required>
+          <form onsubmit="javascript:  CreateCard($('#email').val(), $('#message').val(), $('#cardCategoryId').val()); return false;">
             
-            <label for="email">Email:</label>
-            <input type="email" id="email" class="form-input" required>
+            <label for="user">UserID:</label>
+            <input name="user" type="text" id="email" class="form-input" required>
             
             <label for="message">Message:</label>
-            <textarea id="message" class="form-input" required></textarea>
+            <textarea name="message" type="text" id="message" class="form-input" required></textarea>
             
-            <label for="idea">Idea</label>
-            <input type="radio" id="idea" name="card-type" value="idea" class="form-radio" required>
+            <label for="category">Card Category:</label>
+            <select name="category" id="cardCategoryId" required>
+                <option value="idea">Idea</option>
+                <option value="complaint">Complaint</option>
+            </select>
             
-            <label for="complaint">Complaint</label>
-            <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>
+<!--            <label for="complaint">Complaint</label>
+            <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>-->
             
             <button type="submit" class="form-button">Submit</button>
           </form>
