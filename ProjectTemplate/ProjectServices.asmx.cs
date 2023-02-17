@@ -76,12 +76,26 @@ namespace ProjectTemplate
             return true;
         }
 
-        /**
+		[WebMethod(EnableSession = true)]
+		public bool isAdmin()
+		{
+			
+			if (Convert.ToInt32(Session["IsAdmin"]) == 1)
+            {
+				return true;
+			}
+
+            return false;
+				
+		}
+
+
+		/**
          * CreateAccount() allows users to make nonadmin accounts
          * If the username is already in use, do not create the account, otherwise,
          * can make the account
          */
-        [WebMethod(EnableSession = true)]
+		[WebMethod(EnableSession = true)]
         public void CreateAccount(string uid, string pass)
         {
 
