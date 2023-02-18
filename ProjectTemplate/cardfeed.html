@@ -37,21 +37,18 @@
 
     .feed-item {
         background-color: #FF968F;
-  border: 2px solid ;
-  padding: 20px;
-  margin: 10px;
-  width: 400px;
-  height: 200px;
+        border: 2px solid ;
+        padding: 20px;
+        margin: 10px;
+        width: 400px;
+        height: 100px;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 20px;
+  text-align: center;
 }
 
-p {
-  font-size: 18px;
-  line-height: 1.5;
-}
 
 a {
   display: block;
@@ -64,7 +61,7 @@ a {
             background-color: #3e9696;
             color: black;
             padding: 15px 32px;
-            margin: 20px;
+            margin: 0 20px;
             text-align: center;
             font-size: 14px;
             border-radius: 5px;
@@ -83,18 +80,25 @@ a {
 			dataType: "json",
 			success: function (msg) {
 				if (msg.d) {
-                    alert("success");
                    
                     const dataset = msg.d
-                    console.log(dataset);
-                    console.log(dataset[0]["carddesc"])
 
+                    for (let i = 0; i < dataset.length; i++) {
+						const cardFeed = document.getElementById("listing");
 
-                    document.getElementById("listing").innerHTML = "hello";
-                    
-                   
+						const card = document.createElement("div");
+						card.innerHTML = "<h2>" + dataset[i]["carddesc"] + "</hr>";
+						card.classList.add("feed-item");
+						card.setAttribute('id', dataset[i]["cardid"])
 
-					//document.getElementById("message").innerHTML = dataset[0].carddesc;
+						const deleteBtn = document.createElement("button");
+						deleteBtn.innerHTML = "Delete";
+						deleteBtn.classList.add("button");
+
+						card.appendChild(deleteBtn);
+						cardFeed.appendChild(card);
+
+                    }
                     
 					
 
@@ -118,32 +122,7 @@ a {
     </div>
     <button class="button" onclick="javascript:  results();">Load Data</button>
     <div id="listing"></div>
-    <div class="feed-item">
-        <h2>Card 1</h2>
-        <p>
-            <ol>
-                <li>Name: </li>
-                <li>Email: </li>
-                <li id="message">Message: </li>
 
-            </ol>
-        </p>
-        <button class="button" type="delete" class="form-button">Delete</button>
-    </div>
-
-    <body>
-        <div class="feed-item">
-            <h2>Card 2</h2>
-            <p>
-                <ol>
-                    <li>Name: </li>
-                    <li>Email: </li>
-                    <li>Message: </li>
-
-                </ol>
-                <button class="button" type="delete" class="form-button">Delete</button>
-            </p>
-        </div>
 
     </body>
 

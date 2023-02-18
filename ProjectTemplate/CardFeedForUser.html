@@ -26,6 +26,16 @@
 			font-size: 5vh;
 		}
 
+		.feed-item {
+			background-color: #FF968F;
+			border: 2px solid;
+			padding: 20px;
+			margin: 10px;
+			width: 400px;
+			height: 100px;
+		}
+
+
 		.menu-bar-container {
 			height: 10vh;
 			background-color: #3e9696;
@@ -80,6 +90,14 @@
 			font-size: 14px;
 			border-radius: 5px;
 		}
+
+		input{
+			visibility: hidden;
+		}
+
+			input:checked + label{
+				border: 2px solid #3e9696;
+			}
 	</style>
 
 </head>
@@ -95,20 +113,58 @@
 			   dataType: "json",
 			   success: function (msg) {
 				   if (msg.d) {
+
 					   alert("success");
-
 					   const dataset = msg.d
-					   console.log(dataset);
-					   console.log(dataset[0]["carddesc"])
+
+					   for (let i = 0; i < dataset.length; i++) {
+						  
+
+						   
+
+						   const cardFeed = document.getElementById("listing");
+
+						   const card = document.createElement("div");
+						   card.innerHTML = "<p>" + dataset[i]["carddesc"] + "</p>";
+						   card.classList.add("feed-item");
+						   card.setAttribute('id', dataset[i]["cardid"])
+
+						   const form = document.createElement("form");
+						   form.setAttribute("action", "index.html");
+
+						   const btn1 = document.createElement("input");
+						   btn1.setAttribute("type", "radio");
+						   btn1.setAttribute("id", "like" + [i]);
+						   btn1.setAttribute("name", dataset[i]["cardid"]);
+						   btn1.setAttribute("value", "1");
+
+						   const label1 = document.createElement("label");
+						   label1.innerHTML = '&#128077;';
+						   label1.setAttribute("for", "like" + [i]);
+
+						   const btn2 = document.createElement("input");
+						   btn2.setAttribute("type", "radio");
+						   btn2.setAttribute("id", "dislike" + [i]);
+						   btn2.setAttribute("name", dataset[i]["cardid"]);
+						   btn2.setAttribute("value", "0");
+
+						   const label2 = document.createElement("label");
+						   label2.innerHTML = '&#128078;';
+						   label2.setAttribute("for", "dislike" + [i]);
 
 
-					   document.getElementById("listing").innerHTML = "hello";
+						   form.appendChild(btn1);
+						   form.appendChild(label1);
+						   form.appendChild(btn2);
+						   form.appendChild(label2);
 
 
+						   card.appendChild(form);
+						   cardFeed.appendChild(card);
+						   
 
-					   //document.getElementById("message").innerHTML = dataset[0].carddesc;
-
-
+						
+					   }
 
 				   }
 				   else {
@@ -133,18 +189,20 @@
 	   <div id="listing"></div>
 
 
-	   <div class="card">
-		   <h1>Card Category Here</h1>
-		   <br>
+	   <div class="feed-item">
 		   <p>"Card statement goes here"</p>
 
+
+		   <form action="index.html" method="post">
+
+			   <input type="radio" id="like" name="vote" value="1">
+			   <label for="like"> &#128077;</label>
+
+			   <input type="radio" id="dislike" name="vote" value="0">
+			   <label for="dislike">&#128078;</label>
+
+		   </form>
 	   </div>
-	   <form class="actions" action="index.html" method="post">
-		   <button type="submit"> &#128077; </button>
-		   <button type="submit"> 	&#128078;</button>
-
-	   </form>
-
 
 
    </body>
