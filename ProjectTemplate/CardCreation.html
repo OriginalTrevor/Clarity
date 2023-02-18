@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,163 +13,24 @@
             margin: 0;
             padding: 0;
             font-family: Helvetica, Arial, sans-serif;
-        }
-
-        h1 {
-            margin: 0;
-            padding: 0;
-            color: white;
-            font-weight: normal;
-            margin-left: 16px;
-            padding-top: 10px;
-        }
-
-        .menu-bar-container {
-            height: 60px;
-            background-color: #c7c7c7;
-            border-top: 1px #cccccc solid;
-            display: flex;
-        }
-
-        .menu-bar-container-2 {
-            height: 40px;
-            background-color: #877d81;
-            border-top: 1px #cccccc solid;
-            float: right;
-        }
-
-        .container-2-menu a {
-            text-decoration: none;
-            color: white;
-        }
-
-        .home {
-            float: left;
-            height: 25px;
-            border-left: none;
-            margin-left: 140px;
-            margin-top: 10px;
-        }
-
-        .card-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card {
-            width: 400px;
-            height: 550px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            transition: 0.3s;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px;
-        }
-
-        .card-image {
-            width: 100%;
-            height: 60%;
-            overflow: hidden;
-        }
-
-            .card-image img {
-                width: 100%;
-            }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-container2 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card2 {
-            width: 400px;
-            height: 550px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            transition: 0.3s;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px;
-        }
-
-        .card-image2 {
-            width: 100%;
-            height: 60%;
-            overflow: hidden;
-        }
-
-            .card-image2 img {
-                width: 100%;
-            }
-
-        .card-body2 {
-            padding: 20px;
-        }
-
-        .card-container3 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card3 {
-            width: 400px;
-            height: 550px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            transition: 0.3s;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px;
-        }
-
-        .card-image3 {
-            width: 100%;
-            height: 60%;
-            overflow: hidden;
-        }
-
-            .card-image3 img {
-                width: 100%;
-            }
-
-        .card-body3 {
-            padding: 20px;
+            background-color: #ADD8E6;
+            font-size: 2vh;
         }
 
 
         .button {
-            background-color: #c8cbc8;
+            background-color: #FF968F;
             color: black;
             padding: 15px 32px;
             text-align: center;
             font-size: 14px;
             border-radius: 5px;
-        }
-
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            align-items: left;
-            margin-top: 50px;
-        }
-
-        .card4 {
-            width: 20%;
-            height: 20%;
-            background-color: white;
-            border: 1px solid lightgray;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            padding: 20px;
-            text-align: center;
+            position: absolute;
+            top: 83%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            font-size: 1.5em;
         }
 
         h3 {
@@ -176,74 +39,121 @@
 
         .form-container {
             width: 500px;
-            margin: left;
             text-align: left;
             padding: 30px;
-            background-color: #f2f2f2;
+            background-color: #3e9696;
+            padding: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-
 
         .form-input {
             width: 100%;
             padding: 12px 20px;
             margin: 8px 0;
             box-sizing: border-box;
-            border: 2px solid #ccc;
+            border: 2px solid #FF968F;
             border-radius: 4px;
-        }
-
-
-        .form-radio {
-            display: inline-block;
-            margin: 8px 10px;
         }
 
 
         .form-button {
             width: 100%;
-            background-color: #c7c7c7;
-            color: white;
+            color: black;
             padding: 14px 20px;
             margin: 8px 0;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 1.4em;
         }
 
 
-            .form-button:hover {
-                background-color: #c7c7c7;
-            }
     </style>
 </head>
 
 <script>
     // this will be the code that links the C# backend code to the user card creation interface
+
+    function CreateCard(userId, cardDesc, cardCat) {
+        //the url of the webservice we will be talking to
+        var webMethod = "ProjectServices.asmx/CreateCard";
+        //the parameters we will pass the service (in json format because curly braces)
+        //note we encode the values for transmission over the web.  All the \'s are just
+        //because we want to wrap our keynames and values in double quotes so we have to
+        //escape the double quotes (because the overall string we're creating is in double quotes!)
+        var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"desc\":\"" + encodeURI(cardDesc) + "\",\"category\":\"" + encodeURI(cardCat) + "\"}";
+
+        //jQuery ajax method
+        $.ajax({
+            //post is more secure than get, and allows
+            //us to send big data if we want.  really just
+            //depends on the way the service you're talking to is set up, though
+            type: "POST",
+            //the url is set to the string we created above
+            url: webMethod,
+            //same with the data
+            data: parameters,
+            //these next two key/value pairs say we intend to talk in JSON format
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            //jQuery sends the data and asynchronously waits for a response.  when it
+            //gets a response, it calls the function mapped to the success key here
+            success: function (msg) {
+                //the server response is in the msg object passed in to the function here
+                //since our logon web method simply returns a true/false, that value is mapped
+                //to a generic property of the server response called d (I assume short for data
+                //but honestly I don't know...)
+                if (!msg.d) {
+                    //server replied true, so go to the home page
+                    window.location.replace('HomePage.html');
+                }
+                else {
+                    //server replied false, so let the user know
+                    //the card creation failed
+                    alert("could not create card");
+                }
+            },
+            error: function (e) {
+                //if something goes wrong in the mechanics of delivering the
+                //message to the server or the server processing that message,
+                //then this function mapped to the error key is executed rather
+                //than the one mapped to the success key.
+                alert("There seems to be an error somewhere.....");
+            }
+        });
+    }
 </script>
 
-    <body>
-        <div class="form-container">
-          <h2>Submit Card</h2>
-          <form action="#">
-            <label for="name">Name:</label>
-            <input type="text" id="name" class="form-input" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" class="form-input" required>
-            
+<body>
+    
+    <div class="form-container">
+        <h2>Submit Card</h2>
+        <form onsubmit="javascript:  CreateCard($('#email').val(), $('#message').val(), $('#cardCategoryId').val()); return false;">
+
+            <label for="user">UserID:</label>
+            <input name="user" type="text" id="email" class="form-input" required>
+
             <label for="message">Message:</label>
-            <textarea id="message" class="form-input" required></textarea>
-            
-            <label for="idea">Idea</label>
-            <input type="radio" id="idea" name="card-type" value="idea" class="form-radio" required>
-            
-            <label for="complaint">Complaint</label>
-            <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>
-            
+            <textarea name="message" type="text" id="message" class="form-input" required></textarea>
+
+            <label for="category">Card Category:</label>
+            <select name="category" id="cardCategoryId" required>
+                <option value="idea">Idea</option>
+                <option value="complaint">Complaint</option>
+            </select>
+
+            <!--            <label for="complaint">Complaint</label>
+                        <input type="radio" id="complaint" name="card-type" value="complaint" class="form-radio" required>-->
+
             <button type="submit" class="form-button">Submit</button>
-          </form>
-        </div>
-        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
-      </body>
+        </form>
+    </div>
+
+    <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+
+</body>
     </html>
     

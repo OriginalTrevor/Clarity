@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -50,12 +51,12 @@
             background: #FF968F;
         }
 
-		.card-image {
-			width: 100%;
-			height: 25vh;
-			overflow: hidden;
-			text-align: center;
-		}
+        .card-image {
+            width: 100%;
+            height: 25vh;
+            overflow: hidden;
+            text-align: center;
+        }
 
             .card-image img {
                 height: 100%;
@@ -78,9 +79,10 @@
 			background-color: #36454F;
 			color: whitesmoke;
 			padding: 15px 32px;
-			font-size: 3vh;
+			
+			text-align: center;
+			font-size: 14px;
 			border-radius: 5px;
-
 		}
 
 
@@ -123,6 +125,31 @@
             }
         });
     }
+
+    function adminPage() {
+		var webMethod = "ProjectServices.asmx/isAdmin";
+		$.ajax({
+			type: "POST",
+			url: webMethod,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (msg) {
+				if (msg.d) {
+					//admin page if admin
+                    window.location.replace('CardFeed.html');
+                   
+				}
+                else {
+                    //user page if not admin
+					window.location.replace('CardFeedForUser.html');
+				}
+			},
+			error: function (e) {
+				alert("There was an error somewhere....");
+			}
+		});
+
+    }
 </script>
 
 <body>
@@ -151,9 +178,10 @@
             </div>
         </div>
     
-        <div class="card" onclick="javascript: window.location.href = 'CardFeed.html';">
+        <div class="card" onclick="javascript: adminPage();">
             <div class="card-image">
                 <img src="feed3.png" alt="image">
+                <h3 class="card-title"><a href="cardfeed.html"></a></h3>
             </div>
             <div class="card-body">
                 <h3 class="card-title"><a href="CardFeed.html">Card Feed</a></h3>
@@ -162,4 +190,5 @@
     </div>
 </body>
 </html>
+
 

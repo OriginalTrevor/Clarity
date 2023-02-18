@@ -92,6 +92,8 @@
   <ItemGroup>
     <Content Include="AccountCreation.html" />
     <Content Include="CardCreation.html" />
+    <Content Include="CardFeed.html" />
+    <Content Include="CardFeedForUser.html" />
     <Content Include="feed3.png" />
     <Content Include="Global.asax" />
     <Content Include="HomePage.html" />

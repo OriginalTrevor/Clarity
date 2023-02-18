@@ -1,0 +1,154 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Create a Card</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <style>
+
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			background-color: #ADD8E6;
+		}
+
+		h1 {
+			margin: 0;
+			padding: 0;
+			padding-right: 50vw;
+			color: white;
+			font-weight: normal;
+			margin-left: 16px;
+			padding-top: 10px;
+			font-size: 5vh;
+		}
+
+		.menu-bar-container {
+			height: 10vh;
+			background-color: #3e9696;
+			display: flex;
+			justify-content: center;
+		}
+
+    .feed-item {
+        background-color: #FF968F;
+        border: 2px solid ;
+        padding: 20px;
+        margin: 10px;
+        width: 400px;
+        height: 100px;
+}
+
+h2 {
+  font-size: 20px;
+  text-align: center;
+}
+
+
+a {
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+  text-align: right;
+}
+
+.button {
+            background-color: #3e9696;
+            color: black;
+            padding: 15px 32px;
+            margin: 0 20px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<script>
+	function results() {
+
+		var webMethod = "ProjectServices.asmx/GetCards";
+		$.ajax({
+			type: "POST",
+			url: webMethod,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (msg) {
+				if (msg.d) {
+                   
+                    const dataset = msg.d
+
+                    for (let i = 0; i < dataset.length; i++) {
+						const cardFeed = document.getElementById("listing");
+
+						const card = document.createElement("div");
+						card.innerHTML = "<h2>" + dataset[i]["carddesc"] + "</hr>";
+						card.classList.add("feed-item");
+						card.setAttribute('id', dataset[i]["cardid"])
+
+						const deleteBtn = document.createElement("button");
+						deleteBtn.innerHTML = "Delete";
+						deleteBtn.classList.add("button");
+						deleteBtn.addEventListener('click', deleteCard);
+
+						card.appendChild(deleteBtn);
+						cardFeed.appendChild(card);
+
+                        function deleteCard() {
+
+                            var webMethod = "ProjectServices.asmx/DeleteCard";
+                            var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                            $.ajax({
+                                type: "POST",
+                                url: webMethod,
+                                data: parameters,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (msg) {
+                                    console.log("success!");
+                                    window.location.reload();
+                                },
+                                error: function (e) {
+                                    alert("there was an error processing your request.....");
+                                }
+                            });
+                        }
+						
+                    }
+                    
+                    
+
+				}
+				else {
+					
+				}
+			},
+			error: function (e) {
+				alert("There was an error somewhere....");
+			}
+		});
+	}
+
+	
+</script>
+
+<body onload="results()">
+
+    <div class="menu-bar-container">
+        <h1>Card Feed</h1>
+        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+    </div>
+    <button class="button" onclick="javascript:  results();">Load Data</button>
+    <div id="listing"></div>
+
+
+    </body>
+
+</html>
+

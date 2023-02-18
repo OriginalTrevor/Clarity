@@ -44,7 +44,7 @@ namespace ProjectTemplate
         {
             bool success = false;
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            string sqlSelect = "SELECT userid,IsAdmin FROM accounts WHERE userid=@idValue and pass=@passValue";
+            string sqlSelect = "SELECT accountid, userid,IsAdmin FROM accounts WHERE userid=@idValue and pass=@passValue";
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
@@ -61,7 +61,8 @@ namespace ProjectTemplate
 
             if (sqlDt.Rows.Count > 0)
             {
-                Session["userid"] = sqlDt.Rows[0]["userid"];
+                Session["accountid"] = sqlDt.Rows[0]["accountid"];
+				Session["userid"] = sqlDt.Rows[0]["userid"];
                 Session["IsAdmin"] = sqlDt.Rows[0]["IsAdmin"];
                 success = true;
             }
@@ -76,12 +77,26 @@ namespace ProjectTemplate
             return true;
         }
 
-        /**
+		[WebMethod(EnableSession = true)]
+		public bool isAdmin()
+		{
+			
+			if (Convert.ToInt32(Session["IsAdmin"]) == 1)
+            {
+				return true;
+			}
+
+            return false;
+				
+		}
+
+
+		/**
          * CreateAccount() allows users to make nonadmin accounts
          * If the username is already in use, do not create the account, otherwise,
          * can make the account
          */
-        [WebMethod(EnableSession = true)]
+		[WebMethod(EnableSession = true)]
         public void CreateAccount(string uid, string pass)
         {
 
@@ -150,7 +165,7 @@ namespace ProjectTemplate
 
 
         [WebMethod(EnableSession = true)]
-        public void CreateCard(string uid, string desc, string category)
+        public void CreateCard(string desc, string category)
         {
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
@@ -161,7 +176,8 @@ namespace ProjectTemplate
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-            sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(uid));
+
+            sqlCommand.Parameters.AddWithValue("@uid", Session["accountid"]);
             sqlCommand.Parameters.AddWithValue("@desc", HttpUtility.UrlDecode(desc));
             sqlCommand.Parameters.AddWithValue("@category", HttpUtility.UrlDecode(category));
 
@@ -195,6 +211,65 @@ namespace ProjectTemplate
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
                 sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(uid));
+
+                sqlConnection.Open();
+                try
+                {
+                    sqlCommand.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                }
+                sqlConnection.Close();
+            }
+        }
+        /**
+        * MarkasDone will allow admins to marks cards completed once done 
+        */
+
+        [WebMethod(EnableSession = true)]
+        public void MarkasDone(string cardid)
+        {
+            if (Convert.ToInt32(Session["IsAdmin"]) == 1)
+            {
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                //this is a simple update, with parameters to pass in values
+                string sqlSelect = "update Cards set IsDone=1 where cardid=@idValue";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(cardid));
+
+                sqlConnection.Open();
+                try
+                {
+                    sqlCommand.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                }
+                sqlConnection.Close();
+            }
+        }
+
+        /**
+        * DeleteCard will allow the administrators to delete unnecessary cards
+        */
+
+        [WebMethod(EnableSession = true)]
+        public void DeleteCard(string cardid)
+        {
+            if (Convert.ToInt32(Session["IsAdmin"]) == 1)
+            {
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                //this is a simple update, with parameters to pass in values
+                string sqlSelect = "delete from Cards where cardid=@idValue";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(cardid));
 
                 sqlConnection.Open();
                 try
