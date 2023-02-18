@@ -72,6 +72,43 @@ a {
     </style>
 </head>
 
+<script>
+	function results() {
+
+		var webMethod = "ProjectServices.asmx/GetCards";
+		$.ajax({
+			type: "POST",
+			url: webMethod,
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (msg) {
+				if (msg.d) {
+                    alert("success");
+                   
+                    const dataset = msg.d
+                    console.log(dataset);
+                    console.log(dataset[0]["carddesc"])
+
+
+                    document.getElementById("listing").innerHTML = "hello";
+                    
+                   
+
+					//document.getElementById("message").innerHTML = dataset[0].carddesc;
+                    
+					
+
+				}
+				else {
+					
+				}
+			},
+			error: function (e) {
+				alert("There was an error somewhere....");
+			}
+		});
+	}
+</script>
 
 <body>
 
@@ -79,13 +116,15 @@ a {
         <h1>Card Feed</h1>
         <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
     </div>
+    <button class="button" onclick="javascript:  results();">Load Data</button>
+    <div id="listing"></div>
     <div class="feed-item">
         <h2>Card 1</h2>
         <p>
             <ol>
                 <li>Name: </li>
                 <li>Email: </li>
-                <li>Message: </li>
+                <li id="message">Message: </li>
 
             </ol>
         </p>
