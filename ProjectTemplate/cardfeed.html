@@ -94,13 +94,35 @@ a {
 						const deleteBtn = document.createElement("button");
 						deleteBtn.innerHTML = "Delete";
 						deleteBtn.classList.add("button");
+						deleteBtn.addEventListener('click', deleteCard);
 
 						card.appendChild(deleteBtn);
 						cardFeed.appendChild(card);
 
+                        function deleteCard() {
+
+                            var webMethod = "ProjectServices.asmx/DeleteCard";
+                            var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                            $.ajax({
+                                type: "POST",
+                                url: webMethod,
+                                data: parameters,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (msg) {
+                                    console.log("success!");
+                                    window.location.reload();
+                                },
+                                error: function (e) {
+                                    alert("there was an error processing your request.....");
+                                }
+                            });
+                        }
+						
                     }
                     
-					
+                    
 
 				}
 				else {
@@ -112,6 +134,8 @@ a {
 			}
 		});
 	}
+
+	
 </script>
 
 <body onload="results()">
