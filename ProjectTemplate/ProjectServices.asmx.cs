@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Security.Principal;
 using System.Security.Cryptography;
+using MySqlX.XDevAPI.Relational;
 
 namespace ProjectTemplate
 {
@@ -349,6 +350,57 @@ namespace ProjectTemplate
             else
             {
                 //if they're not logged in, return an empty array
+                return new Card[0];
+            }
+        }
+
+        /*
+         * GetCardsByUser will return a list of cards, but it will only display those cards that match up to the signed-in account
+         */
+
+        [WebMethod(EnableSession = true)]
+        public Card[] GetCardsByUser()
+        {
+
+            // only display cards for logged in user
+            if (Session["userid"] != null)
+            {
+
+                DataTable sqlDt = new DataTable("Cards");
+
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select cardid, cardcreator, carddesc, cardcategory from Cards where cardcreator=@idValue order by cardid";
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                sqlCommand.Parameters.AddWithValue("@idValue", Session["accountid"]);
+
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                sqlDa.Fill(sqlDt);
+
+                // loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<Card> cards = new List<Card>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+
+                    cards.Add(new Card
+                    {
+                        cardid = Convert.ToInt32(sqlDt.Rows[i]["cardid"]),
+                        cardcreator = sqlDt.Rows[i]["cardcreator"].ToString(),
+                        carddesc = sqlDt.Rows[i]["carddesc"].ToString(),
+                        cardcategory = sqlDt.Rows[i]["cardcategory"].ToString()
+
+                    });
+                }
+                //convert the list of cards to an array and return!
+                return cards.ToArray();
+            }
+            else
+            {
+                // display an empty array if the user is not logged in
                 return new Card[0];
             }
         }

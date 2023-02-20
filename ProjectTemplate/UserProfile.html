@@ -4,19 +4,88 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Your Account</title>
-  <style>
-      html, body {
-          margin: 0;
-          padding: 0;
-          font-family: Helvetica, Arial, sans-serif;
-          background-color: #ADD8E6;
-          font-size: 2vh;
-      }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Your Account</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #ADD8E6;
+        }
 
-      .button {
+        h1 {
+            margin: 0;
+            padding: 0;
+            padding-right: 50vw;
+            color: white;
+            font-weight: normal;
+            margin-left: 16px;
+            padding-top: 10px;
+            font-size: 5vh;
+        }
+
+        .feed-item {
+            background-color: #FF968F;
+            border: 2px solid;
+            padding: 20px;
+            margin: 10px;
+            width: 400px;
+            height: 100px;
+        }
+
+
+        .menu-bar-container {
+            height: 10vh;
+            background-color: #3e9696;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: white;
+            width: 500px;
+            padding: 65px;
+            top: 50%;
+            left: 45%;
+            transform: translate(-38%, -45%);
+            text-align: center;
+            position: absolute;
+        }
+
+        .actions {
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2F4F4F;
+            text-align: center;
+        }
+
+
+            .actions button {
+                font-size: 26px;
+                font-weight: bold;
+                margin: 18px 0;
+                padding: 10px 14px;
+                width: 50%;
+                text-align: center;
+            }
+
+
+            .actions input {
+                font-size: 24px;
+                width: 100%;
+                padding: 14px 10x;
+                border: 0;
+                outline: none;
+                border-radius: 5px;
+                text-align: center;
+            }
+
+        .button {
             background-color: #3e9696;
             color: black;
             padding: 15px 32px;
@@ -25,60 +94,96 @@
             border-radius: 5px;
         }
 
+        input {
+            visibility: hidden;
+        }
 
-      .card4 {
-          width: 20%;
-          height: 20%;
-          background-color: #FF968F;
-          border: 2px solid black;
-          margin-bottom: 20px;
-          padding: 20px;
-          text-align: center;
-      }
+            input:checked + label {
+                border: 2px solid #3e9696;
+            }
 
-  	.menu-bar-container {
-  		height: 10vh;
-  		background-color: #3e9696;
-  		display: flex;
-  		justify-content: center;
-  	}
+        .complete {
+            background-color: #daa520;
+            color: cornsilk;
+        }
 
-  	h1 {
-  		margin: 0;
-  		padding: 0;
-  		padding-right: 40vw;
-  		color: white;
-  		font-weight: normal;
-  		margin-left: 16px;
-  		padding-top: 10px;
-  		font-size: 5vh;
-  	}
-
-  </style>
+        div.complete > button {
+            background-color: #daa520;
+            color: cornsilk;
+        }
+    </style>
 </head>
 
 <script>
     // this will be the code that links the backend C# to the user profile interface
+    function results() {
+
+        var webMethod = "ProjectServices.asmx/GetCardsByUser";
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d) {
+
+                    const dataset = msg.d
+
+                    for (let i = 0; i < dataset.length; i++) {
+                        const cardFeed = document.getElementById("listing");
+
+                        const card = document.createElement("div");
+                        card.innerHTML = "<h2>" + dataset[i]["carddesc"] + "</hr>";
+                        card.classList.add("feed-item");
+                        card.setAttribute('id', dataset[i]["cardid"])
+
+                        cardFeed.appendChild(card);
+
+
+                        function checkIfCardDone() {
+                            var webMethod = "ProjectServices.asmx/CheckIfDone";
+                            var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                            $.ajax({
+                                type: "POST",
+                                url: webMethod,
+                                data: parameters,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (msg) {
+                                    if (msg.d) {
+                                        const data = msg.d;
+                                        if (data == "1") {
+                                            card.classList.add("complete");
+                                            console.log("card has been stored with a complete value");
+                                        }
+                                    }
+                                },
+                                error: function (e) {
+                                    alert("there was an error processing your request......");
+                                }
+                            }) // end ajax call for check if done
+                        } // end check if done function
+                        checkIfCardDone();
+                    } // end for loop
+
+                } // end if statement
+            },
+            error: function (e) {
+                alert("There was an error somewhere....");
+            }
+        }); // end results ajax call
+    } // end results function
 </script>
 
-<body>
+<body onload="javascript: results()">
     
 
     <div class="menu-bar-container">
         <h1>Your Submissions</h1>
         <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
     </div>
-    <div class="card-list">
-        <div class="card4">
-            <h3>Card 1</h3>
-        </div>
-        <div class="card4">
-            <h3>Card 2</h3>
-        </div>
-        <div class="card4">
-            <h3>Card 3</h3>
-        </div>
-    </div>
+    <div id="listing"></div>
     
 
 </body>
