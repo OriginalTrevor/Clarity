@@ -42,22 +42,22 @@
         margin: 10px;
         width: 400px;
         height: 100px;
-}
 
-h2 {
-  font-size: 20px;
-  text-align: center;
-}
+    }
 
+    h2 {
+      font-size: 20px;
+      text-align: center;
+    }
 
-a {
-  display: block;
-  margin-top: 10px;
-  font-size: 16px;
-  text-align: right;
-}
+        a {
+            display: block;
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: right;
+        }
 
-.button {
+        .button {
             background-color: #3e9696;
             color: black;
             padding: 15px 32px;
@@ -66,6 +66,18 @@ a {
             font-size: 14px;
             border-radius: 5px;
         }
+
+		.complete {
+			background-color: #daa520;
+			color: cornsilk;
+		}
+
+        div.complete > button {
+            background-color: #daa520;
+            color: cornsilk;
+        }
+
+
     </style>
 </head>
 
@@ -90,14 +102,23 @@ a {
 						card.innerHTML = "<h2>" + dataset[i]["carddesc"] + "</hr>";
 						card.classList.add("feed-item");
 						card.setAttribute('id', dataset[i]["cardid"])
+					
 
 						const deleteBtn = document.createElement("button");
 						deleteBtn.innerHTML = "Delete";
 						deleteBtn.classList.add("button");
 						deleteBtn.addEventListener('click', deleteCard);
 
+						const doneBtn = document.createElement("button");
+						doneBtn.innerHTML = "Complete";
+						doneBtn.classList.add("button");
+						doneBtn.addEventListener('click', markCardAsDone);
+
 						card.appendChild(deleteBtn);
+						card.appendChild(doneBtn);
 						cardFeed.appendChild(card);
+
+						
 
                         function deleteCard() {
 
@@ -111,29 +132,70 @@ a {
                                 contentType: "application/json; charset=utf-8",
                                 dataType: "json",
                                 success: function (msg) {
-                                    console.log("success!");
+									console.log("success!");
                                     window.location.reload();
                                 },
                                 error: function (e) {
                                     alert("there was an error processing your request.....");
                                 }
-                            });
-                        }
-						
-                    }
-                    
-                    
+                            }); // end delete card ajax call
+						} // end delete card function
 
-				}
-				else {
-					
-				}
+						function markCardAsDone() {
+
+							var webMethod = "ProjectServices.asmx/MarkasDone";
+							var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+							$.ajax({
+								type: "POST",
+								url: webMethod,
+								data: parameters,
+								contentType: "application/json; charset=utf-8",
+								dataType: "json",
+								success: function (msg) {
+									console.log("card is done!");
+									window.location.reload();
+								},
+								error: function (e) {
+									alert("there was an error processing your request......");
+								}
+							}) // end ajax call for mark card as done
+						} // end mark card as done function
+
+						function checkIfCardDone() {
+							var webMethod = "ProjectServices.asmx/CheckIfDone";
+                            var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                            $.ajax({
+                                type: "POST",
+                                url: webMethod,
+                                data: parameters,
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (msg) {
+									if (msg.d) {
+										const data = msg.d;
+										if (data == "1") {
+											card.classList.add("complete");
+											console.log("card has been stored with a complete value");
+										}
+									}
+                                },
+                                error: function (e) {
+                                    alert("there was an error processing your request......");
+                                }
+                            }) // end ajax call for check if done
+                        } // end check if done function
+						checkIfCardDone();
+                    } // end for loop
+                    
+				} // end if statement
 			},
 			error: function (e) {
 				alert("There was an error somewhere....");
 			}
-		});
-	}
+		}); // end results ajax call
+	} // end results function
 
 	
 </script>

@@ -98,6 +98,16 @@
 			input:checked + label{
 				border: 2px solid #3e9696;
 			}
+
+        .complete {
+            background-color: #daa520;
+            color: cornsilk;
+        }
+
+        div.complete > button {
+            background-color: #daa520;
+            color: cornsilk;
+        }
 	</style>
 
 </head>
@@ -164,12 +174,33 @@
 						   card.appendChild(form);
 						   cardFeed.appendChild(card);
 						   
+                           function checkIfCardDone() {
+                               var webMethod = "ProjectServices.asmx/CheckIfDone";
+                               var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
 
+                               $.ajax({
+                                   type: "POST",
+                                   url: webMethod,
+                                   data: parameters,
+                                   contentType: "application/json; charset=utf-8",
+                                   dataType: "json",
+                                   success: function (msg) {
+                                       if (msg.d) {
+                                           const data = msg.d;
+                                           if (data == "1") {
+                                               card.classList.add("complete");
+											   card.removeChild(form);
+                                           }
+                                       }
+                                   },
+                                   error: function (e) {
+                                       alert("there was an error processing your request......");
+                                   }
+                               }) // end ajax call for check if done
+                           } // end check if done function
+                           checkIfCardDone();
 						
 					   }
-
-				   }
-				   else {
 
 				   }
 			   },
@@ -189,23 +220,5 @@
 
 	   <button class="button" onclick="javascript:  results();">Load Data</button>
 	   <div id="listing"></div>
-
-
-	   <div class="feed-item">
-		   <p>"Card statement goes here"</p>
-
-
-		   <form action="index.html" method="post">
-
-			   <input type="radio" id="like" name="vote" value="1">
-			   <label for="like"> &#128077;</label>
-
-			   <input type="radio" id="dislike" name="vote" value="0">
-			   <label for="dislike">&#128078;</label>
-
-		   </form>
-	   </div>
-
-
    </body>
 </html >

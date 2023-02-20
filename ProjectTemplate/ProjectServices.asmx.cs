@@ -253,6 +253,29 @@ namespace ProjectTemplate
             }
         }
 
+        /*
+         * CheckifDone will see if card contains a 1 or a 0 in the IsDone category
+         */
+
+        [WebMethod(EnableSession = true)]
+        public string CheckIfDone(string cardid)
+        {
+            
+                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                string sqlSelect = "select IsDone from Cards where cardid=@idValue";
+
+
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+                sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(cardid));
+
+                sqlConnection.Open();
+                string result = Convert.ToString(sqlCommand.ExecuteScalar());
+            sqlConnection.Close();
+            return result;
+        }
+
         /**
         * DeleteCard will allow the administrators to delete unnecessary cards
         */
