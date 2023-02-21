@@ -130,51 +130,70 @@
 					   const dataset = msg.d
 
 					   for (let i = 0; i < dataset.length; i++) {
-						  
-
-						   
 
 						   const cardFeed = document.getElementById("listing");
 
 						   const card = document.createElement("div");
 						   card.innerHTML = "<p>" + dataset[i]["carddesc"] + "</p>";
 						   card.classList.add("feed-item");
-						   card.setAttribute('id', dataset[i]["cardid"])
+						   card.setAttribute('id', dataset[i]["cardid"]);
 
-						   const form = document.createElement("form");
-						   form.setAttribute("action", "CardFeedForUser.html");
+						   const upvoteBtn = document.createElement("button");
+						   upvoteBtn.setAttribute('id', 'upvoteButtonId');
+                           upvoteBtn.innerHTML = "Upvote! &#128077;";
+                           upvoteBtn.classList.add("button");
+                           upvoteBtn.addEventListener('click', giveUpvote);
 
-						   const btn1 = document.createElement("input");
-						   btn1.setAttribute("type", "radio");
-						   btn1.setAttribute("id", "like" + [i]);
-						   btn1.setAttribute("name", dataset[i]["cardid"]);
-						   btn1.setAttribute("value", "1");
-						   btn1.setAttribute("onclick", "this.form.submit()");
+						   const downvoteBtn = document.createElement("button");
+						   downvoteBtn.setAttribute('id', 'downvoteButtonId');
+                           downvoteBtn.innerHTML = "Downvote! &#128078;";
+                           downvoteBtn.classList.add("button");
+                           downvoteBtn.addEventListener('click', giveDownvote);
 
-						   const label1 = document.createElement("label");
-						   label1.innerHTML = '&#128077;';
-						   label1.setAttribute("for", "like" + [i]);
+                           card.appendChild(upvoteBtn);
+                           card.appendChild(downvoteBtn);
 
-						   const btn2 = document.createElement("input");
-						   btn2.setAttribute("type", "radio");
-						   btn2.setAttribute("id", "dislike" + [i]);
-						   btn2.setAttribute("name", dataset[i]["cardid"]);
-						   btn2.setAttribute("value", "0");
-						   btn2.setAttribute("onclick", "this.form.submit()");
-
-						   const label2 = document.createElement("label");
-						   label2.innerHTML = '&#128078;';
-						   label2.setAttribute("for", "dislike" + [i]);
-
-
-						   form.appendChild(btn1);
-						   form.appendChild(label1);
-						   form.appendChild(btn2);
-						   form.appendChild(label2);
-
-
-						   card.appendChild(form);
 						   cardFeed.appendChild(card);
+
+						   function giveUpvote() {
+							   var webMethod = "ProjectServices.asmx/GiveUpvote";
+							   var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+							   $.ajax({
+								   type: "POST",
+								   url: webMethod,
+								   data: parameters,
+								   contentType: "application/json; charset=utf-8",
+								   dataType: "json",
+								   success: function (msg) {
+									   console.log("you gave an upvote!");	
+									   window.location.reload();
+								   },
+								   error: function (e) {
+									   alert("there was an error giving an upvote.....");
+								   }
+								   }) // end ajax call
+						   } // end give upvote function
+
+                           function giveDownvote() {
+                               var webMethod = "ProjectServices.asmx/GiveDownvote";
+                               var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                               $.ajax({
+                                   type: "POST",
+                                   url: webMethod,
+                                   data: parameters,
+                                   contentType: "application/json; charset=utf-8",
+                                   dataType: "json",
+                                   success: function (msg) {
+									   console.log("you gave a downvote!");	
+                                       window.location.reload();
+                                   },
+                                   error: function (e) {
+                                       alert("there was an error giving a downvote.....");
+                                   }
+                               }) // end ajax call
+                           } // end give downvote function
 						   
                            function checkIfCardDone() {
                                var webMethod = "ProjectServices.asmx/CheckIfDone";
@@ -191,7 +210,8 @@
                                            const data = msg.d;
                                            if (data == "1") {
                                                card.classList.add("complete");
-											   card.removeChild(form);
+											   card.removeChild(upvoteBtn);
+											   card.removeChild(downvoteBtn);
                                            }
                                        }
                                    },
@@ -200,17 +220,52 @@
                                    }
                                }) // end ajax call for check if done
                            } // end check if done function
-                           checkIfCardDone();
-						
-					   }
+						   checkIfCardDone();
 
-				   }
+						   function checkIfVote() {
+							   var webMethod = "ProjectServices.asmx/CheckIfVote";
+							   var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+							   $.ajax({
+								   type: "POST",
+								   url: webMethod,
+								   data: parameters,
+								   contentType: "application/json; charset=utf-8",
+								   dataType: "json",
+								   success: function (msg) {
+									   if (msg.d) {
+										   const data = msg.d;
+										   console.log(card.id, "card#" ,data);
+										   if (data == "1") {
+											   upvoteBtn.setAttribute('disabled', true);
+											   downvoteBtn.setAttribute('disabled', true);
+											   upvoteBtn.style.backgroundColor = "gold";
+											   card.removeChild(downvoteBtn);
+										   }
+										   if (data == "0") {
+                                               upvoteBtn.setAttribute('disabled', true);
+                                               downvoteBtn.setAttribute('disabled', true);
+											   downvoteBtn.style.backgroundColor = "gold";
+											   card.removeChild(upvoteBtn);
+										   }
+										   
+									   }
+								   },
+								   error: function (e) {
+									   alert("there was an error checking if voted......");
+								   }
+								   }) // end ajax call for check if vote
+						   } // end of check if vote function
+						   checkIfVote();				
+					   } // end of for loop
+
+				   } // end if msg.d
 			   },
 			   error: function (e) {
 				   alert("There was an error somewhere....");
 			   }
-		   });
-	   }
+		   }); // end results ajax call
+	   } // end results function
    </script>
 
    <body onload="results()">

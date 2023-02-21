@@ -454,7 +454,7 @@ namespace ProjectTemplate
          * GiveUpvote will give the card an upvote if there isn't one already or take it away
          */
         [WebMethod(EnableSession = true)]
-        public void GiveUpvote(string accountid, string cardid)
+        public void GiveUpvote(string cardid)
         {
             if (Session["userid"] != null)
             {
@@ -463,12 +463,12 @@ namespace ProjectTemplate
 
                 // First we need to ensure that there is not an existing vote for this account and card
 
-                string sqlSelect = "SELECT accouontid, cardid, isUpvote FROM Votes WHERE accouontid=@aid AND cardid=@cid";
+                string sqlSelect = "SELECT accountid, cardid, isUpvote FROM Votes WHERE accountid=@aid AND cardid=@cid";
                 MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
 
-                sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                sqlCommand.Parameters.AddWithValue("@aid", Session["accountid"]);
                 sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
 
 
@@ -488,13 +488,13 @@ namespace ProjectTemplate
 
                 if (!voteAlreadyGiven)
                 {
-                    sqlSelect = "insert into Votes (accouontid, cardid, isUpvote) " +
+                    sqlSelect = "insert into Votes (accountid, cardid, isUpvote) " +
                     "values(@aid, @cid, true); SELECT LAST_INSERT_ID();";
 
                     sqlConnection = new MySqlConnection(sqlConnectString);
                     sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-                    sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                    sqlCommand.Parameters.AddWithValue("@aid", Session["accountid"]);
                     sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
 
 
@@ -520,7 +520,7 @@ namespace ProjectTemplate
         * GiveDownvote will give the card a downvote if there isn't one already or take it away
         */
         [WebMethod(EnableSession = true)]
-        public void GiveDownvote(string accountid, string cardid)
+        public void GiveDownvote(string cardid)
         {
             if (Session["userid"] != null)
             {
@@ -529,12 +529,12 @@ namespace ProjectTemplate
 
                 // First we need to ensure that there is not an existing vote for this account and card
 
-                string sqlSelect = "SELECT accouontid, cardid, isUpvote FROM Votes WHERE accouontid=@aid AND cardid=@cid";
+                string sqlSelect = "SELECT accountid, cardid, isUpvote FROM Votes WHERE accountid=@aid AND cardid=@cid";
                 MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
 
-                sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                sqlCommand.Parameters.AddWithValue("@aid", Session["accountid"]);
                 sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
 
 
@@ -554,13 +554,13 @@ namespace ProjectTemplate
 
                 if (!voteAlreadyGiven)
                 {
-                    sqlSelect = "insert into Votes (accouontid, cardid, isUpvote) " +
+                    sqlSelect = "insert into Votes (accountid, cardid, isUpvote) " +
                     "values(@aid, @cid, false); SELECT LAST_INSERT_ID();";
 
                     sqlConnection = new MySqlConnection(sqlConnectString);
                     sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-                    sqlCommand.Parameters.AddWithValue("@aid", HttpUtility.UrlDecode(accountid));
+                    sqlCommand.Parameters.AddWithValue("@aid", Session["accountid"]);
                     sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
 
 
@@ -579,6 +579,30 @@ namespace ProjectTemplate
             }
 
 
+        }
+
+        /*
+         * CheckifVote will see if card contains a 1 or a 0 in the isUpvote category
+         */
+
+        [WebMethod(EnableSession = true)]
+        public string CheckIfVote(string cardid)
+        {
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "select isUpvote from Votes where cardid=@cid and accountid=@aid";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@aid", Session["accountid"]);
+            sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+            sqlConnection.Open();
+            string result = Convert.ToString(sqlCommand.ExecuteScalar());
+            sqlConnection.Close();
+            return result;
         }
 
 
