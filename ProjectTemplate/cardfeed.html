@@ -99,7 +99,7 @@
 						const cardFeed = document.getElementById("listing");
 
 						const card = document.createElement("div");
-						card.innerHTML = "<h2>" + dataset[i]["carddesc"] + "</hr>";
+						card.innerHTML = "<p>Category: " + dataset[i]["cardcategory"] + "</p>" + "<h2>" + dataset[i]["carddesc"] + "</h2>";
 						card.classList.add("feed-item");
 						card.setAttribute('id', dataset[i]["cardid"])
 					

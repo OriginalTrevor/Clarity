@@ -32,7 +32,7 @@
 			padding: 20px;
 			margin: 10px;
 			width: 400px;
-			height: 100px;
+			height: 130px;
 		}
 
 
@@ -110,6 +110,12 @@
             background-color: #daa520;
             color: cornsilk;
         }
+
+		h2 {
+			
+			font-size: 15px;
+			text-align: center;
+		}
 	</style>
 
 </head>
@@ -134,7 +140,7 @@
 						   const cardFeed = document.getElementById("listing");
 
 						   const card = document.createElement("div");
-						   card.innerHTML = "<p>" + dataset[i]["carddesc"] + "</p>";
+						   card.innerHTML = "<p>Category: " + dataset[i]["cardcategory"] + "</p>" + "<h2>" + dataset[i]["carddesc"] + "</h2>";
 						   card.classList.add("feed-item");
 						   card.setAttribute('id', dataset[i]["cardid"]);
 
