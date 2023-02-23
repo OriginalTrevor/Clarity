@@ -605,6 +605,44 @@ namespace ProjectTemplate
             return result;
         }
 
+        [WebMethod(EnableSession = true)]
+        public int GetUpvotes(string cardid)
+        {
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "select COUNT(isUpvote) from Votes where cardid=@cid and isUpvote=1";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+            sqlConnection.Open();
+            int result = Convert.ToInt16(sqlCommand.ExecuteScalar());
+            sqlConnection.Close();
+            return result;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public int GetDownvotes(string cardid)
+        {
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "select COUNT(isUpvote) from Votes where cardid=@cid and isUpvote=0";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(cardid));
+
+            sqlConnection.Open();
+            int result = Convert.ToInt16(sqlCommand.ExecuteScalar());
+            sqlConnection.Close();
+            return result;
+        }
+
 
         /////////////////////////////////////////////////////////////////////////
         //don't forget to include this decoration above each method that you want
