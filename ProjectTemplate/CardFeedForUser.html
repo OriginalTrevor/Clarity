@@ -26,14 +26,16 @@
 			font-size: 5vh;
 		}
 
-		.feed-item {
-			background-color: #FF968F;
-			border: 2px solid;
-			padding: 20px;
-			margin: 10px;
-			width: 400px;
-			height: 130px;
-		}
+        .feed-item {
+            background-color: #FF968F;
+            border: 2px solid;
+            padding: 20px;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 70vw;
+            height: 30vh;
+        }
 
 
 		.menu-bar-container {
@@ -54,52 +56,27 @@
 			position: absolute;
 		}
 
-		.actions {
-			position: absolute;
-			top: 90%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: #2F4F4F;
-			text-align: center;
-		}
-
-
-			.actions button {
-				font-size: 26px;
-				font-weight: bold;
-				margin: 18px 0;
-				padding: 10px 14px;
-				width: 50%;
-				text-align: center;
-			}
-
-
-			.actions input {
-				font-size: 24px;
-				width: 100%;
-				padding: 14px 10x;
-				border: 0;
-				outline: none;
-				border-radius: 5px;
-				text-align: center;
-			}
 
 		.button {
 			background-color: #3e9696;
-			color: black;
-			padding: 15px 32px;
+			color: white;
+			padding: 18px 28px;
 			text-align: center;
-			font-size: 14px;
+			font-size: 15px;
 			border-radius: 5px;
+			margin-top: 45px;
 		}
 
-		input{
-			visibility: hidden;
-		}
+        #homebutton {
+            background-color: mintcream;
+			color: black;
+			margin: 0;
+			padding: 20px;
+			margin-top: 0;
+			font-weight: bold;
+			font-size: 20px;
+        }
 
-			input:checked + label{
-				border: 2px solid #3e9696;
-			}
 
         .complete {
             background-color: #daa520;
@@ -113,8 +90,21 @@
 
 		h2 {
 			
-			font-size: 15px;
+			font-size: 16.5px;
 			text-align: center;
+			font-weight: 400;
+		}
+
+		span {
+			display: inline-block;
+			margin: 10px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		p {
+			font-size: 20px;
+			font-weight: 700;
 		}
 	</style>
 
@@ -148,16 +138,22 @@
 						   upvoteBtn.setAttribute('id', 'upvoteButtonId');
                            upvoteBtn.innerHTML = "Upvote! &#128077;";
                            upvoteBtn.classList.add("button");
-                           upvoteBtn.addEventListener('click', giveUpvote);
+						   upvoteBtn.addEventListener('click', giveUpvote);
+
+						   const numUpvotes = document.createElement("span");
 
 						   const downvoteBtn = document.createElement("button");
 						   downvoteBtn.setAttribute('id', 'downvoteButtonId');
                            downvoteBtn.innerHTML = "Downvote! &#128078;";
                            downvoteBtn.classList.add("button");
-                           downvoteBtn.addEventListener('click', giveDownvote);
+						   downvoteBtn.addEventListener('click', giveDownvote);
 
-                           card.appendChild(upvoteBtn);
-                           card.appendChild(downvoteBtn);
+						   const numDownvotes = document.createElement("span");
+
+						   card.appendChild(upvoteBtn);
+						   card.appendChild(numUpvotes);
+						   card.appendChild(downvoteBtn);
+						   card.appendChild(numDownvotes);
 
 						   cardFeed.appendChild(card);
 
@@ -181,6 +177,32 @@
 								   }) // end ajax call
 						   } // end give upvote function
 
+						   function checkNumUpvotes() {
+                               var webMethod = "ProjectServices.asmx/GetUpvotes";
+							   var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                               $.ajax({
+                                   type: "POST",
+                                   url: webMethod,
+                                   data: parameters,
+                                   contentType: "application/json; charset=utf-8",
+                                   dataType: "json",
+                                   success: function (msg) {
+									   if (msg.d) {
+										   numUpvotes.innerHTML = msg.d;
+									   }
+									   else {
+										   numUpvotes.innerHTML = "0";
+									   }
+                                       
+                                   },
+                                   error: function (e) {
+                                       alert("there was an error checking for upvotes.....");
+                                   }
+                               }) // end ajax call
+						   } // end check num upvotes function
+						   checkNumUpvotes();
+
                            function giveDownvote() {
                                var webMethod = "ProjectServices.asmx/GiveDownvote";
                                var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
@@ -199,7 +221,32 @@
                                        alert("there was an error giving a downvote.....");
                                    }
                                }) // end ajax call
-                           } // end give downvote function
+						   } // end give downvote function
+
+                           function checkNumDownvotes() {
+                               var webMethod = "ProjectServices.asmx/GetDownvotes";
+                               var parameters = "{\"cardid\":\"" + encodeURI(card.id) + "\"}";
+
+                               $.ajax({
+                                   type: "POST",
+                                   url: webMethod,
+                                   data: parameters,
+                                   contentType: "application/json; charset=utf-8",
+                                   dataType: "json",
+                                   success: function (msg) {
+									   if (msg.d) {
+										   numDownvotes.innerHTML = msg.d;
+									   }
+									   else {
+										   numDownvotes.innerHTML = "0";
+									   }
+                                   },
+                                   error: function (e) {
+                                       alert("there was an error checking for downvotes.....");
+                                   }
+                               }) // end ajax call
+                           } // end check num downvotes function
+                           checkNumDownvotes();
 						   
                            function checkIfCardDone() {
                                var webMethod = "ProjectServices.asmx/CheckIfDone";
@@ -218,6 +265,8 @@
                                                card.classList.add("complete");
 											   card.removeChild(upvoteBtn);
 											   card.removeChild(downvoteBtn);
+											   card.removeChild(numUpvotes);
+											   card.removeChild(numDownvotes);
                                            }
                                        }
                                    },
@@ -278,7 +327,7 @@
 
 	   <div class="menu-bar-container">
 		   <h1>Card Feed</h1>
-		   <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+		   <button class="button" id="homebutton" onclick="window.location.href = 'HomePage.html';">Home</button>
 	   </div>
 
 	   <div id="listing"></div>

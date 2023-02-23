@@ -10,73 +10,108 @@
 
     <style>
 
-		body {
-			margin: 0;
-			padding: 0;
-			font-family: sans-serif;
-			background-color: #ADD8E6;
-		}
-
-		h1 {
-			margin: 0;
-			padding: 0;
-			padding-right: 50vw;
-			color: white;
-			font-weight: normal;
-			margin-left: 16px;
-			padding-top: 10px;
-			font-size: 5vh;
-		}
-
-		.menu-bar-container {
-			height: 10vh;
-			background-color: #3e9696;
-			display: flex;
-			justify-content: center;
-		}
-
-    .feed-item {
-        background-color: #FF968F;
-        border: 2px solid ;
-        padding: 20px;
-        margin: 10px;
-        width: 400px;
-        height: 100px;
-
-    }
-
-    h2 {
-      font-size: 20px;
-      text-align: center;
-    }
-
-        a {
-            display: block;
-            margin-top: 10px;
-            font-size: 16px;
-            text-align: right;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #ADD8E6;
         }
+
+        h1 {
+            margin: 0;
+            padding: 0;
+            padding-right: 50vw;
+            color: white;
+            font-weight: normal;
+            margin-left: 16px;
+            padding-top: 10px;
+            font-size: 5vh;
+        }
+
+        .feed-item {
+            background-color: #FF968F;
+            border: 2px solid;
+            padding: 10px;
+            margin: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 70vw;
+            height: 30vh;
+        }
+
+
+        .menu-bar-container {
+            height: 10vh;
+            background-color: #3e9696;
+            display: flex;
+            justify-content: center;
+        }
+
 
         .button {
             background-color: #3e9696;
-            color: black;
-            padding: 15px 32px;
-            margin: 0 20px;
+            color: white;
+            padding: 18px 28px;
             text-align: center;
-            font-size: 14px;
+            font-size: 15px;
             border-radius: 5px;
+            margin-top: 45px;
+            margin-bottom: 0;
         }
 
-		.complete {
-			background-color: #daa520;
-			color: cornsilk;
-		}
+        .deleteButton {
+            background-color: red;
+            margin-left: 20%;
+        }
+
+        .doneButton {
+            margin-left: 40%;
+            background-color: #daa520;
+            color: cornsilk;
+        }
+
+        #homebutton {
+            background-color: mintcream;
+            color: black;
+            margin: 0;
+            padding: 20px;
+            margin-top: 0;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+
+        .complete {
+            background-color: #daa520;
+            color: cornsilk;
+        }
 
         div.complete > button {
             background-color: #daa520;
             color: cornsilk;
         }
 
+        h2 {
+            font-size: 16.5px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        span {
+            display: inline-block;
+            margin: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        p {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        #listing {
+            margin: auto;
+        }
 
     </style>
 </head>
@@ -106,12 +141,14 @@
 
 						const deleteBtn = document.createElement("button");
 						deleteBtn.innerHTML = "Delete";
-						deleteBtn.classList.add("button");
+                        deleteBtn.classList.add("button");
+                        deleteBtn.classList.add("deleteButton");
 						deleteBtn.addEventListener('click', deleteCard);
 
 						const doneBtn = document.createElement("button");
 						doneBtn.innerHTML = "Complete";
-						doneBtn.classList.add("button");
+                        doneBtn.classList.add("button");
+                        doneBtn.classList.add("doneButton");
 						doneBtn.addEventListener('click', markCardAsDone);
 
 						card.appendChild(deleteBtn);
@@ -177,7 +214,9 @@
 										const data = msg.d;
 										if (data == "1") {
 											card.classList.add("complete");
-											console.log("card has been stored with a complete value");
+                                            console.log("card has been stored with a complete value");
+                                            card.removeChild(deleteBtn);
+                                            card.removeChild(doneBtn);
 										}
 									}
                                 },
@@ -204,7 +243,7 @@
 
     <div class="menu-bar-container">
         <h1>Card Feed</h1>
-        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+        <button class="button" id="homebutton" onclick="window.location.href = 'HomePage.html';">Home</button>
     </div>
  
     <div id="listing"></div>

@@ -78,12 +78,18 @@
 		.button {
 			background-color: #36454F;
 			color: whitesmoke;
-			padding: 15px 32px;
 			
 			text-align: center;
-			font-size: 14px;
 			border-radius: 5px;
 		}
+
+        #logOffButton {
+            margin: 0;
+            padding: 20px;
+            margin-top: 0;
+            font-weight: bold;
+            font-size: 20px;
+        }
 
 
         a {
@@ -156,7 +162,7 @@
 
     <div class="menu-bar-container">
         <h1>Home Page</h1>
-        <button class="button" onclick="javascript: LogOff();">Log Off</button>
+        <button class="button" id="logOffButton" onclick="javascript: LogOff();">Log Off</button>
     </div>
 
     <div class="card-container">

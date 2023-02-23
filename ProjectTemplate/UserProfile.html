@@ -32,8 +32,8 @@
             border: 2px solid;
             padding: 20px;
             margin: 10px;
-            width: 400px;
-            height: 100px;
+            width: 30vw;
+            height: 20vh;
         }
 
 
@@ -55,35 +55,6 @@
             position: absolute;
         }
 
-        .actions {
-            position: absolute;
-            top: 90%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #2F4F4F;
-            text-align: center;
-        }
-
-
-            .actions button {
-                font-size: 26px;
-                font-weight: bold;
-                margin: 18px 0;
-                padding: 10px 14px;
-                width: 50%;
-                text-align: center;
-            }
-
-
-            .actions input {
-                font-size: 24px;
-                width: 100%;
-                padding: 14px 10x;
-                border: 0;
-                outline: none;
-                border-radius: 5px;
-                text-align: center;
-            }
 
         .button {
             background-color: #3e9696;
@@ -93,14 +64,6 @@
             font-size: 14px;
             border-radius: 5px;
         }
-
-        input {
-            visibility: hidden;
-        }
-
-            input:checked + label {
-                border: 2px solid #3e9696;
-            }
 
         .complete {
             background-color: #daa520;
@@ -112,10 +75,34 @@
             color: cornsilk;
         }
 
-		h2 {
-			font-size: 15px;
-			text-align: center;
-		}
+        h2 {
+            font-size: 16.5px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        span {
+            display: inline-block;
+            margin: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        p {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        #homebutton {
+            background-color: mintcream;
+            color: black;
+            margin: 0;
+            padding: 20px;
+            margin-top: 0;
+            font-weight: bold;
+            font-size: 20px;
+        }
 
     </style>
 </head>
@@ -187,7 +174,7 @@
 
     <div class="menu-bar-container">
         <h1>Your Submissions</h1>
-        <button class="button" onclick="window.location.href = 'HomePage.html';">Home</button>
+        <button class="button" id="homebutton" onclick="window.location.href = 'HomePage.html';">Home</button>
     </div>
     <div id="listing"></div>
     
