@@ -34,7 +34,7 @@
             margin-left: auto;
             margin-right: auto;
             width: 70vw;
-            height: 30vh;
+            height: auto;
         }
 
 
@@ -189,10 +189,10 @@
                                    dataType: "json",
                                    success: function (msg) {
 									   if (msg.d) {
-										   numUpvotes.innerHTML = msg.d;
+										   numUpvotes.innerHTML = "Upvotes: " + msg.d;
 									   }
 									   else {
-										   numUpvotes.innerHTML = "0";
+										   numUpvotes.innerHTML = "Upvotes: 0";
 									   }
                                        
                                    },
@@ -235,10 +235,10 @@
                                    dataType: "json",
                                    success: function (msg) {
 									   if (msg.d) {
-										   numDownvotes.innerHTML = msg.d;
+										   numDownvotes.innerHTML = "Downvotes: " + msg.d;
 									   }
 									   else {
-										   numDownvotes.innerHTML = "0";
+										   numDownvotes.innerHTML = "Downvotes: 0";
 									   }
                                    },
                                    error: function (e) {

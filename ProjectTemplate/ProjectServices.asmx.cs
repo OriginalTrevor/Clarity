@@ -318,7 +318,7 @@ namespace ProjectTemplate
                 DataTable sqlDt = new DataTable("accounts");
 
                 string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                string sqlSelect = "select cardid, cardcreator, carddesc, cardcategory from Cards order by cardid";
+                string sqlSelect = "SELECT Cards.cardid, Cards.cardcreator, Cards.carddesc, Cards.cardcategory, SUM(CASE WHEN Votes.isUpvote THEN 1 ELSE 0 END) AS isUpvote_count FROM Cards LEFT JOIN Votes ON Cards.cardid = Votes.cardid GROUP BY Cards.cardid, Cards.cardcreator, Cards.carddesc, Cards.cardcategory ORDER BY isUpvote_count DESC;";
 
                 MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
